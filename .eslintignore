@@ -1,5 +1,0 @@
-node_modules
-*.local
-node_modules/*
-babel.config.js
-react-app-env.d.ts
