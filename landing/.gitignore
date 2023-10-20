@@ -24,3 +24,5 @@ _old
 .idea/*
 .idea
 .serverless
+.next/*
+.next
