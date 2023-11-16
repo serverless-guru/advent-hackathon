@@ -35,7 +35,7 @@ const Chat: React.FC = () => {
             <div className="w-2/4 p-6 gap-5 flex flex-col h-screen bg-[#020409] ">
                 <div className={'flex flex-col gap-[9px] h-[500px] overflow-y-auto'}>
                     <div className={'text-white flex flex-col items-center gap-3'}>
-                        {messages.map((message) => <div
+                        {messages.map((message) => <div key={message}
                             className={'bg-[#2B2D31]  w-full h-auto break-words w-full  p-3 text-white  rounded-lg text-sx font-medium '}
                         >{message}</div>)}
                     </div>
