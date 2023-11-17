@@ -34,8 +34,9 @@ const Chat: React.FC = () => {
       lastMessage &&
       !lastMessage.data.includes("Request served by")
     ) {
-      const newMessages = lastMessage.data;
-      setMessages((prevMessages) => [...prevMessages, newMessages]);
+      const newMessages = JSON.parse(lastMessage.data);;
+      console.log(newMessages?.message);
+      setMessages((prevMessages) => [...prevMessages, newMessages?.message]);
     }
   }, [lastMessage, readyState]);
 
@@ -56,19 +57,17 @@ const Chat: React.FC = () => {
             {messages.map((message, index) => (
               <div
                 key={index}
-                className={
-                  "bg-[#2B2D31]  w-full h-auto break-words w-full  p-3 text-white  rounded-lg text-sx font-medium "
-                }
+                className={`bg-[#2B2D31] w-full h-auto break-words w-full p-3 text-white rounded-lg text-sx font-medium ${!message ? 'hidden' : ''}`}
               >
                 {message}
               </div>
             ))}
           </div>
         </div>
-        <AddMessagesForm
+        {/* <AddMessagesForm
           clearMessagesHandle={clearMessagesHandle}
           socketUrl={socketUrl}
-        />
+        /> */}
       </div>
     </div>
   );
