@@ -65,10 +65,10 @@ const Chat: React.FC = () => {
             ))}
           </div>
         </div>
-        {/* <AddMessagesForm
+        <AddMessagesForm
           clearMessagesHandle={clearMessagesHandle}
           socketUrl={socketUrl}
-        /> */}
+        />
       </div>
     </div>
   );

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import useWebSocket from "react-use-websocket";
 import { Button } from "../../atoms/button";
 
-const AddMessagesForm: React.FC<{ clearMessagesHandle: () => void }> = (
+const AddMessagesForm: React.FC<{ clearMessagesHandle: () => void, socketUrl:string }> = (
   props
 ) => {
   const { clearMessagesHandle } = props;
