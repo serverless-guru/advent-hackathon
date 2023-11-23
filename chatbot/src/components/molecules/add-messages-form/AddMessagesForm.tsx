@@ -2,17 +2,28 @@ import React, { useState } from "react";
 import useWebSocket from "react-use-websocket";
 import { Button } from "../../atoms/button";
 
-const AddMessagesForm: React.FC<{ clearMessagesHandle: () => void, socketUrl:string }> = (
-  props
-) => {
+const AddMessagesForm: React.FC<{
+  clearMessagesHandle: () => void;
+  socketUrl: string;
+  sentMessage: (msg:any) => void;
+}> = (props) => {
   const { clearMessagesHandle } = props;
   const { socketUrl } = props;
+  const { sentMessage } = props;
   const [value, setValue] = useState("");
   const { sendMessage } = useWebSocket(socketUrl, {
-    onOpen: () => console.log("WebSocket connection opened."),
+    onOpen: () => {
+      // console.log("WebSocket connection opened.");
+      sendMessage(
+        JSON.stringify({
+          action: "authenticate",
+          apiKey: "66f1cf0d-b1d5-49b7-b668-ab7e71a97f02",
+        })
+      );
+    },
     onClose: () => console.log("WebSocket connection closed."),
     shouldReconnect: (closeEvent) => true,
-    onMessage: (event: WebSocketEventMap["message"]) => console.log(event),
+    // onMessage: (event: WebSocketEventMap["message"]) => console.log(event),
     share: true,
   });
 
@@ -20,7 +31,13 @@ const AddMessagesForm: React.FC<{ clearMessagesHandle: () => void, socketUrl:str
     if (!value) {
       return;
     }
-    sendMessage(value);
+    sendMessage(
+      JSON.stringify({
+        action: "send_message",
+        message: value,
+      })
+    );
+    sentMessage({who: 'me', message:value});
     setValue("");
   };
 
