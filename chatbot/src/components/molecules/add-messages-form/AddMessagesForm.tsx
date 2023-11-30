@@ -3,13 +3,13 @@ import useWebSocket from "react-use-websocket";
 import { Button } from "../../atoms/button";
 
 const AddMessagesForm: React.FC<{
-  clearMessagesHandle: () => void;
   socketUrl: string;
   sentMessage: (msg:any) => void;
+  inputDisabled: boolean
 }> = (props) => {
-  const { clearMessagesHandle } = props;
   const { socketUrl } = props;
   const { sentMessage } = props;
+  const { inputDisabled } = props;
   const [value, setValue] = useState("");
   const { sendMessage } = useWebSocket(socketUrl, {
     onOpen: () => {
@@ -50,26 +50,25 @@ const AddMessagesForm: React.FC<{
 
   return (
     <>
-      <textarea
-        placeholder={"Talk to chatbot ..."}
-        value={value}
-        onChange={(e) => {
-          setValue(e.currentTarget.value);
-        }}
-        onKeyDown={handleKeyPress}
-        className={
-          "bg-[#2B2D31] w-full h-20 p-3 text-white cursor-pointer rounded-lg text-sx font-medium hover:ring-2 ring-[#826AED] focus:outline-none focus:ring-2 ring-[#826AED] focus:bg-black-darker placeholder-[#7E858F]"
-        }
-      />
-      <div className={"flex justify-between"}>
-        <Button
-          type={"button"}
-          title={"Clear"}
-          onClick={() => {
-            clearMessagesHandle();
-          }}
-          variant={"darker"}
+      <div className="relative">
+        <textarea
+          placeholder="..."
+          value={value}
+          onChange={(e) => setValue(e.currentTarget.value)}
+          disabled={inputDisabled}
+          onKeyDown={handleKeyPress}
+          rows={4}
+          className="bg-[#2B2D31] w-full p-3 pr-10 text-white cursor-pointer rounded-lg text-sx font-medium hover:ring-2 ring-[#826AED] focus:outline-none focus:ring-2 ring-[#826AED] focus:bg-black-darker placeholder-[#7E858F]"
         />
+        <img
+          src="/src/assets/icons/arrow-square-right.svg"
+          alt="arrow pointing right"
+          className="absolute top-1/2 right-3 transform -translate-y-1/2 cursor-pointer"
+          onClick={sendMesagesHandle}
+        />
+      </div>
+
+      {/* <div className={"flex justify-between"}>
         <Button
           type={"button"}
           disabled={!value}
@@ -77,7 +76,7 @@ const AddMessagesForm: React.FC<{
           onClick={sendMesagesHandle}
           variant={"primary"}
         />
-      </div>
+      </div> */}
     </>
   );
 };

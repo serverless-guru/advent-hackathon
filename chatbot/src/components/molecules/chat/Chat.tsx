@@ -7,6 +7,7 @@ const Chat: React.FC = () => {
   const [messages, setMessages] = useState<any[]>([]);
   const [socketUrl, setSocketUrl] = useState<string | null>(null);
   const [lastReceivedMsg, setLastReceivedMsg] = useState<string>('');
+  const [typing, setTyping] = useState(false);
   const [apiKey, setApiKey] = useState<string>("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -44,12 +45,14 @@ const Chat: React.FC = () => {
     fetchData();
   }, []);
 
+  // interaction
   useEffect(() => {
     if (
       readyState !== 0 &&
       lastMessage &&
       !lastMessage.data.includes("Request served by")
     ) {
+      setTyping(true);
       // console.log("Reply:", lastMessage);
       const newMessages = JSON.parse(lastMessage.data);
       console.log('Data:', newMessages);
@@ -61,6 +64,7 @@ const Chat: React.FC = () => {
           (newMessages?.type === "response_completed" || newMessages?.type === "connection_ready")
       ) {
         setMessages((prevMessages) => [...prevMessages, {who: 'santa', message: lastReceivedMsg}]);
+        setTyping(false)
       }
     }
   }, [lastMessage, readyState]);
@@ -69,40 +73,65 @@ const Chat: React.FC = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  const clearMessagesHandle = () => {
-    setMessages([]);
-  };
-
   if (!socketUrl) {
-    return <div>Loading...</div>;
+    return <div className="w-[400px] mx-auto bg-[url('/src/assets/imgs/chat.gif')] min-h-[450px] bg-no-repeat" />;
   }
 
   return (
-    <div className={"bg-[#020409] pt-10 h-screen flex flex-col items-center"}>
-      <div className={"text-white font-bold text-5xl"} onClick={() => console.log(lastReceivedMsg)}>ChatBot</div>
-      <div className="sm:w-2/4 p-6 gap-5 flex flex-col bg-[#020409] ">
-        <div className={"flex flex-col gap-[9px] h-[500px] overflow-y-auto"}>
-          <div className={"text-white flex flex-col items-center gap-3"}>
+    <div className={"pt-5 h-screen"}>
+      <div className="sm:w-3/5 p-4 mx-auto">
+        <div className={"h-[calc(100vh-226px)] overflow-y-auto no-scrollbar"}>
+          <div className={"text-white text-[15px]"}>
             {messages.map((message, index) => (
-              <div
-                key={index}
-                className={`bg-[#2B2D31] ${ message.who === 'santa' ? 'bg-blue-700' : '' } w-full h-auto break-words w-full p-3 text-white rounded-lg text-sx font-medium ${
-                  !message ? "hidden" : ""
-                }`}
-                ref={index === messages.length - 1 ? messagesEndRef : null}
-              >
-                {message.message}
+              <div className="flex items-start gap-x-4 mb-10">
+                <div className="">
+                  {message?.who === "santa" ? (
+                    <div className="bg-[#002B08] py-[13px] px-[7px] mt-4">
+                      <img
+                        src="/src/assets/imgs/santa_avatar.svg"
+                        alt="sg logo"
+                      />
+                    </div>
+                  ) : (
+                    <div className="">
+                      <img
+                        src="/src/assets/imgs/user_avatar.svg"
+                        alt="profile icon"
+                      />
+                    </div>
+                  )}
+                </div>
+                <div
+                  key={index}
+                  className={`p-3 ${
+                    message.who === "santa" ? "" : "bg-[#171B21]"
+                  } break-words w-full p-3 text-white rounded text-sx font-medium ${
+                    !message ? "hidden" : ""
+                  }`}
+                  ref={index === messages.length - 1 ? messagesEndRef : null}
+                >
+                  {message.message}
+                </div>
               </div>
             ))}
           </div>
         </div>
-        <AddMessagesForm
-          clearMessagesHandle={clearMessagesHandle}
-          socketUrl={socketUrl}
-          sentMessage={(msg) => {
-            setMessages((prevMessages) => [...prevMessages, msg]);
-          }}
-        />
+        {typing && (
+          <div className="text-[14px] text-[#9ea0a3]">
+            Santa is typing<span className="dots"></span>
+          </div>
+        )}
+      </div>
+      <div className="bg-[#171B21] py-4 px-4 sm:py-10 absolute bottom-0 w-full">
+        <div className="sm:w-3/5 mx-auto">
+          <AddMessagesForm
+            socketUrl={socketUrl}
+            inputDisabled={typing}
+            sentMessage={(msg) => {
+              setMessages((prevMessages) => [...prevMessages, msg]);
+            }}
+          />
+        </div>
       </div>
     </div>
   );

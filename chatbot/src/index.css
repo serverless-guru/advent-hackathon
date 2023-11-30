@@ -2,6 +2,35 @@
 @tailwind components;
 @tailwind utilities;
 
+body{
+  color: #fff;
+  background-color: #000000;
+}
 
+a{
+  text-decoration: none;
+}
 
+.dots {
+  display: inline-block;
+  width: 21px;
+  margin-left: 2px;
+  margin-top: 5px;
+  aspect-ratio: 4;
+  background: radial-gradient(circle closest-side,#9ea0a3 90%,#000) 0/calc(100%/3) 100% space;
+  clip-path: inset(0 100% 0 0);
+  animation: d1 1s steps(4) infinite;
+}
 
+@keyframes d1 {to{clip-path: inset(0 -34% 0 0)}}
+
+/* Chrome, Safari and Opera */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* IE, Edge, and Firefox */
+.no-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
