@@ -2,6 +2,8 @@ import React, { useEffect, useRef, useState } from "react";
 import useWebSocket from "react-use-websocket";
 import AddMessagesForm from "../add-messages-form/AddMessagesForm.tsx";
 import retrieveApiConfig from "../../../utils/api/retrieveApiConfig.ts";
+import SantaAvatar from "/src/assets/imgs/santa_avatar.svg";
+import UserAvatar from "/src/assets/imgs/user_avatar.svg";
 
 const Chat: React.FC = () => {
   const [messages, setMessages] = useState<any[]>([]);
@@ -14,9 +16,7 @@ const Chat: React.FC = () => {
 
   const {sendMessage, lastMessage, readyState } = useWebSocket(socketUrl, {
     onOpen: () => {
-        console.log("WebSocket connection opened.")
         if(apiKey){
-            console.log("API KEY:", apiKey);
             sendMessage(
               JSON.stringify({
                 action: "authenticate",
@@ -25,7 +25,7 @@ const Chat: React.FC = () => {
             );
         }
     },
-    onClose: () => console.log("WebSocket connection closed."),
+    onClose: () => console.log(""),
     shouldReconnect: (closeEvent) => true,
     share: true,
   });
@@ -34,7 +34,6 @@ const Chat: React.FC = () => {
     const fetchData = async () => {
       try {
         const config = await retrieveApiConfig(); 
-        console.log("API Config:", config);
         setApiKey(config?.apiKey);
         setSocketUrl(config?.wsEndpoint); // Set the WebSocket URL dynamically
       } catch (error) {
@@ -55,7 +54,6 @@ const Chat: React.FC = () => {
       setTyping(true);
       // console.log("Reply:", lastMessage);
       const newMessages = JSON.parse(lastMessage.data);
-      console.log('Data:', newMessages);
       if (newMessages?.type !== "response_completed" && newMessages?.message !== undefined){
         setLastReceivedMsg(newMessages.message);
       }
@@ -91,15 +89,12 @@ const Chat: React.FC = () => {
                 <div className="">
                   {message?.who === "santa" ? (
                     <div className="bg-[#002B08] py-[13px] px-[7px] mt-4">
-                      <img
-                        src="/src/assets/imgs/santa_avatar.svg"
-                        alt="sg logo"
-                      />
+                      <img src={SantaAvatar} alt="sg logo" />
                     </div>
                   ) : (
                     <div className="">
                       <img
-                        src="/src/assets/imgs/user_avatar.svg"
+                        src={UserAvatar}
                         alt="profile icon"
                       />
                     </div>

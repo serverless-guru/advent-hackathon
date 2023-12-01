@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import useWebSocket from "react-use-websocket";
-import { Button } from "../../atoms/button";
+import RightArrow from "/src/assets/icons/arrow-square-right.svg";
 
 const AddMessagesForm: React.FC<{
   socketUrl: string;
@@ -21,7 +21,7 @@ const AddMessagesForm: React.FC<{
         })
       );
     },
-    onClose: () => console.log("WebSocket connection closed."),
+    onClose: () => console.log(""),
     shouldReconnect: (closeEvent) => true,
     // onMessage: (event: WebSocketEventMap["message"]) => console.log(event),
     share: true,
@@ -61,22 +61,12 @@ const AddMessagesForm: React.FC<{
           className="bg-[#2B2D31] w-full p-3 pr-10 text-white cursor-pointer rounded-lg text-sx font-medium hover:ring-2 ring-[#826AED] focus:outline-none focus:ring-2 ring-[#826AED] focus:bg-black-darker placeholder-[#7E858F]"
         />
         <img
-          src="/src/assets/icons/arrow-square-right.svg"
+          src={RightArrow}
           alt="arrow pointing right"
           className="absolute top-1/2 right-3 transform -translate-y-1/2 cursor-pointer"
           onClick={sendMesagesHandle}
         />
       </div>
-
-      {/* <div className={"flex justify-between"}>
-        <Button
-          type={"button"}
-          disabled={!value}
-          title={"Send"}
-          onClick={sendMesagesHandle}
-          variant={"primary"}
-        />
-      </div> */}
     </>
   );
 };

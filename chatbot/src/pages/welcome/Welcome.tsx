@@ -1,4 +1,6 @@
 import { FC } from "react"
+import Logo from "/src/assets/imgs/logo.svg";
+import RightArrow from "/src/assets/icons/arrow-square-right.svg";
 
 export const Welcome: FC = () => {
   return (
@@ -6,7 +8,7 @@ export const Welcome: FC = () => {
       <div className="container mx-auto bg-[url('/src/assets/imgs/chat.gif')] min-h-[450px] bg-no-repeat">
         <div className="w-full max-w-[600px] px-4 mx-auto text-[36px]">
           <img
-            src="/src/assets/imgs/logo.svg"
+            src={Logo}
             alt="sg logo"
             onContextMenu={(e) => {
               e.preventDefault();
@@ -21,10 +23,7 @@ export const Welcome: FC = () => {
           <a href="/santa">
             <div className="flex items-center gap-2">
               <span className="text-[13px]">Start </span>
-              <img
-                src="/src/assets/icons/arrow-square-right.svg"
-                alt="arrow pointing right"
-              />
+              <img src={RightArrow} alt="arrow pointing right" />
             </div>
           </a>
         </div>
