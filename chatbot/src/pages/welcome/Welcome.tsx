@@ -21,11 +21,16 @@ export const Welcome: FC = () => {
           <a href="/santa">
             <div className="flex items-center gap-2">
               <span className="text-[13px]">Start </span>
-              <img src="/src/assets/icons/arrow-square-right.svg" alt="arrow pointing right" />
+              <img
+                src="/src/assets/icons/arrow-square-right.svg"
+                alt="arrow pointing right"
+              />
             </div>
           </a>
         </div>
       </div>
+      <div className="bg-[url('/src/assets/icons/arrow-square-right.svg')] hidden"></div>
+      <div className="bg-[url('/src/assets/imgs/logo.svg')] hidden"></div>
     </div>
   );
 }

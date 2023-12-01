@@ -80,7 +80,11 @@ const Chat: React.FC = () => {
   return (
     <div className={"pt-5 h-screen"}>
       <div className="sm:w-3/5 p-4 mx-auto">
-        <div className={"h-[calc(100vh-226px)] overflow-y-auto no-scrollbar"}>
+        <div
+          className={
+            "h-[calc(100vh-226px)] sm:h-[calc(100vh-276px)] overflow-y-auto no-scrollbar"
+          }
+        >
           <div className={"text-white text-[15px]"}>
             {messages.map((message, index) => (
               <div className="flex items-start gap-x-4 mb-10">
