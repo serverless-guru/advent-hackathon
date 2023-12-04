@@ -12,6 +12,8 @@ const Chat: React.FC = () => {
   const [typing, setTyping] = useState(false);
   const [apiKey, setApiKey] = useState<string>("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const lastReceivedMsgRef = useRef<string | undefined>(undefined);
+  lastReceivedMsgRef.current = lastReceivedMsg;
 
 
   const {sendMessage, lastMessage, readyState } = useWebSocket(socketUrl, {
@@ -45,6 +47,28 @@ const Chat: React.FC = () => {
   }, []);
 
   // interaction
+  // useEffect(() => {
+  //   if (
+  //     readyState !== 0 &&
+  //     lastMessage &&
+  //     !lastMessage.data.includes("Request served by")
+  //   ) {
+  //     setTyping(true);
+  //     // console.log("Reply:", lastMessage);
+  //     const newMessage = JSON.parse(lastMessage.data);
+  //     console.log("Reply:", newMessage);
+  //     if (newMessage?.type !== "response_completed" && newMessage?.message !== undefined){
+  //       setLastReceivedMsg(newMessage.message);
+  //     }
+  //     if (
+  //         newMessage?.type === "response_completed" || newMessage?.type === "connection_ready"
+  //     ) {
+  //       setMessages((prevMessages) => [...prevMessages, {who: 'santa', message: lastReceivedMsgRef.current}]);
+  //       setTyping(false)
+  //     }
+  //   }
+  // }, [lastMessage, readyState]);
+
   useEffect(() => {
     if (
       readyState !== 0 &&
@@ -52,17 +76,45 @@ const Chat: React.FC = () => {
       !lastMessage.data.includes("Request served by")
     ) {
       setTyping(true);
-      // console.log("Reply:", lastMessage);
-      const newMessages = JSON.parse(lastMessage.data);
-      if (newMessages?.type !== "response_completed" && newMessages?.message !== undefined){
-        setLastReceivedMsg(newMessages.message);
-      }
+      // console.log('Reply:',lastMessage)
+      const newMessage = JSON.parse(lastMessage.data);
       if (
-          newMessages?.message === undefined &&
-          (newMessages?.type === "response_completed" || newMessages?.type === "connection_ready")
+        newMessage?.type !== "response_completed" &&
+        newMessage?.message !== undefined
       ) {
-        setMessages((prevMessages) => [...prevMessages, {who: 'santa', message: lastReceivedMsg}]);
-        setTyping(false)
+        setMessages((prevMessages) => {
+          // Check if the message with this messageId already exists
+          const existingMessageIndex = prevMessages.findIndex(
+            (msg) => msg.messageId === newMessage.messageId
+          );
+
+          if (existingMessageIndex !== -1) {
+            // Update the existing message
+            const updatedMessages = [...prevMessages];
+            updatedMessages[existingMessageIndex] = {
+              ...updatedMessages[existingMessageIndex],
+              message: newMessage.message,
+            };
+            return updatedMessages;
+          } else {
+            // Add a new message
+            return [
+              ...prevMessages,
+              {
+                who: "santa",
+                message: newMessage.message,
+                messageId: newMessage.messageId,
+              },
+            ];
+          }
+        });
+      }
+      // Stop typing
+      if (
+          newMessage?.type === "response_completed" || newMessage?.type === "connection_ready"
+      ) {
+        // setMessages((prevMessages) => [...prevMessages, {who: 'santa', message: lastReceivedMsgRef.current}]);
+        setTyping(false);
       }
     }
   }, [lastMessage, readyState]);
@@ -84,8 +136,8 @@ const Chat: React.FC = () => {
           }
         >
           <div className={"text-white text-[15px]"}>
-            {messages.map((message, index) => (
-              <div className="flex items-start gap-x-4 mb-10">
+            {messages.map((message:any, index:any) => (
+              <div className="flex items-start gap-x-4 mb-10" key={index}>
                 <div className="">
                   {message?.who === "santa" ? (
                     <div className="bg-[#002B08] py-[13px] px-[7px] mt-4">
@@ -93,15 +145,11 @@ const Chat: React.FC = () => {
                     </div>
                   ) : (
                     <div className="">
-                      <img
-                        src={UserAvatar}
-                        alt="profile icon"
-                      />
+                      <img src={UserAvatar} alt="profile icon" />
                     </div>
                   )}
                 </div>
                 <div
-                  key={index}
                   className={`p-3 ${
                     message.who === "santa" ? "" : "bg-[#171B21]"
                   } break-words w-full p-3 text-white rounded text-sx font-medium ${
@@ -121,7 +169,7 @@ const Chat: React.FC = () => {
           </div>
         )}
       </div>
-      <div className="bg-[#171B21] py-4 px-4 sm:py-10 absolute bottom-0 w-full">
+      <div className="bg-[#171B21] py-4 px-4 sm:py-10 fixed bottom-0 w-full">
         <div className="sm:w-3/5 mx-auto">
           <AddMessagesForm
             socketUrl={socketUrl}
